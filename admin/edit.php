@@ -1,0 +1,200 @@
+<?php
+require_once '../config.php';
+require_once '../functions.php';
+
+// ログインチェック
+requireLogin();
+
+$page_title = '音源編集';
+
+// DB接続
+global $db;
+
+// IDパラメータ取得
+$id = $_GET['id'] ?? $_POST['id'] ?? null;
+if (empty($id) || !is_numeric($id)) {
+    setErrorMessage('無効なリクエストです。');
+    redirect(ADMIN_URL . '/dashboard.php');
+}
+
+// 音源データ取得
+$sound = $db->selectOne('SELECT * FROM sounds WHERE id = ?', [$id]);
+if (!$sound) {
+    setErrorMessage('音源が見つかりません。');
+    redirect(ADMIN_URL . '/dashboard.php');
+}
+
+// POSTでの処理
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // CSRFトークン検証
+    if (!verifyCSRFToken($_POST['csrf_token'] ?? '')) {
+        setErrorMessage('セキュリティトークンが無効です。');
+        redirect(ADMIN_URL . '/edit.php?id=' . $id);
+    }
+
+    // 入力値取得
+    $title = $_POST['title'] ?? '';
+    $description = $_POST['description'] ?? '';
+    $category_id = (int)($_POST['category_id'] ?? 0);
+    $is_public = isset($_POST['is_public']) ? 1 : 0;
+
+    // バリデーション
+    if (empty($title)) {
+        setErrorMessage('タイトルは必須です。');
+        redirect(ADMIN_URL . '/edit.php?id=' . $id);
+    }
+
+    // ファイル再アップロード（任意）
+    $filename = $sound['filename'];
+    $original_name = $sound['original_name'];
+    $file_size = $sound['file_size'];
+
+    if (!empty($_FILES['audio_file']['name'])) {
+        // ファイル検証
+        $validation = validateAudioFile($_FILES['audio_file']);
+        if (!$validation['valid']) {
+            setErrorMessage($validation['error']);
+            redirect(ADMIN_URL . '/edit.php?id=' . $id);
+        }
+
+        // 新しいファイルをアップロード
+        $upload_result = uploadAudioFile($_FILES['audio_file']);
+        if (!$upload_result['success']) {
+            setErrorMessage($upload_result['error']);
+            redirect(ADMIN_URL . '/edit.php?id=' . $id);
+        }
+
+        // 古いファイルを削除
+        deleteAudioFile($sound['filename']);
+
+        // 新しい情報に更新
+        $filename = $upload_result['filename'];
+        $original_name = basename($_FILES['audio_file']['name']);
+        $file_size = $_FILES['audio_file']['size'];
+    }
+
+    // DB更新
+    $sql = 'UPDATE sounds SET title = ?, description = ?, category_id = ?, is_public = ?, filename = ?, original_name = ?, file_size = ? WHERE id = ?';
+    
+    if ($db->execute($sql, [$title, $description, $category_id ?: null, $is_public, $filename, $original_name, $file_size, $id])) {
+        setSuccessMessage('音源を更新しました。');
+        redirect(ADMIN_URL . '/dashboard.php');
+    } else {
+        setErrorMessage('更新に失敗しました。');
+        redirect(ADMIN_URL . '/edit.php?id=' . $id);
+    }
+}
+
+// 初期値
+$error_message = getSessionMessage('error');
+$csrf_token = generateCSRFToken();
+
+require_once 'header.php';
+?>
+
+<?php if ($error_message): ?>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <?php echo $error_message; ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+<?php endif; ?>
+
+<div class="row">
+    <div class="col-12 col-md-10 offset-md-1 col-lg-8 offset-lg-2">
+        <h2 class="mb-4">✏️ 音源編集</h2>
+
+        <div class="card">
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data">
+                    <!-- 現在のファイル情報 -->
+                    <div class="mb-3 p-3 bg-light rounded">
+                        <strong>📁 現在のファイル</strong><br>
+                        <span class="text-muted"><?php echo esc($sound['original_name']); ?></span><br>
+                        <small class="text-muted d-block mt-2">
+                            サイズ: <?php echo formatFileSize($sound['file_size']); ?> | 
+                            登録日: <?php echo formatDateTime($sound['uploaded_at']); ?>
+                        </small>
+                    </div>
+
+                    <!-- ファイル再アップロード（任意） -->
+                    <div class="mb-3">
+                        <label for="audio_file" class="form-label">
+                            MP3ファイル（再アップロード、任意）
+                        </label>
+                        <div class="input-group">
+                            <input type="file" id="audio_file" name="audio_file" class="form-control" 
+                                   accept=".mp3,audio/mpeg">
+                            <span class="input-group-text text-nowrap">
+                                <small class="text-muted">最大10MB</small>
+                            </span>
+                        </div>
+                        <small class="form-text text-muted d-block mt-2">
+                            ℹ️ ファイルを選択すると、古いファイルが削除され新しいファイルに置き換わります。
+                        </small>
+                    </div>
+
+                    <!-- タイトル -->
+                    <div class="mb-3">
+                        <label for="title" class="form-label">
+                            タイトル <span class="text-danger">*</span>
+                        </label>
+                        <input type="text" id="title" name="title" class="form-control" 
+                               value="<?php echo esc($sound['title']); ?>" required>
+                    </div>
+
+                    <!-- カテゴリー -->
+                    <div class="mb-3">
+                        <label for="category_id" class="form-label">
+                            カテゴリー（任意）
+                        </label>
+                        <select id="category_id" name="category_id" class="form-control">
+                            <option value="">-- カテゴリーなし --</option>
+                            <?php
+                            $categories = $db->select("SELECT id, name FROM categories ORDER BY display_order ASC");
+                            foreach ($categories as $cat):
+                            ?>
+                                <option value="<?php echo $cat['id']; ?>" 
+                                        <?php echo ($sound['category_id'] == $cat['id']) ? 'selected' : ''; ?>>
+                                    <?php echo esc($cat['name']); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <!-- 説明 -->
+                    <div class="mb-3">
+                        <label for="description" class="form-label">説明（任意）</label>
+                        <textarea id="description" name="description" class="form-control" 
+                                  rows="4"><?php echo esc($sound['description']); ?></textarea>
+                    </div>
+
+                    <!-- 公開フラグ -->
+                    <div class="mb-4">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="is_public" 
+                                   name="is_public" <?php echo $sound['is_public'] ? 'checked' : ''; ?>>
+                            <label class="form-check-label" for="is_public">
+                                📢 公開状態（チェックで公開、外すと非公開）
+                            </label>
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="id" value="<?php echo $sound['id']; ?>">
+                    <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
+
+                    <!-- ボタン -->
+                    <div class="d-grid gap-2 d-md-flex">
+                        <button type="submit" class="btn btn-primary flex-md-grow-0">
+                            💾 更新
+                        </button>
+                        <a href="<?php echo ADMIN_URL; ?>/dashboard.php" class="btn btn-secondary flex-md-grow-0">
+                            ❌ キャンセル
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php require_once 'footer.php'; ?>
