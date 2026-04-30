@@ -21,6 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // 入力値取得
     $title = $_POST['title'] ?? '';
     $description = $_POST['description'] ?? '';
+    $tags_input = $_POST['tags'] ?? '';
     $category_id = (int)($_POST['category_id'] ?? 0);
     $is_public = isset($_POST['is_public']) ? 1 : 0;
 
@@ -54,6 +55,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             VALUES (?, ?, ?, ?, ?, ?, ?)';
     
     if ($db->execute($sql, [$filename, $original_name, $title, $description, $category_id ?: null, $is_public, $file_size])) {
+        // タグを保存
+        $sound_id = $db->lastInsertId();
+        
+        // DEBUG: IDを確認
+        if (empty($sound_id)) {
+            error_log('ERROR: sound_id is empty after INSERT');
+        } else {
+            error_log('DEBUG: sound_id = ' . $sound_id);
+        }
+        
+        if (!empty($tags_input) && !empty($sound_id)) {
+            $tags_array = array_filter(array_map('trim', explode(' ', $tags_input)));
+            error_log('DEBUG: tags_array = ' . json_encode($tags_array));
+            
+            $tag_errors = [];
+            foreach ($tags_array as $tag_name) {
+                // # を削除
+                $tag_name = ltrim($tag_name, '#');
+                if (!empty($tag_name)) {
+                    $tag_insert_result = $db->execute('INSERT INTO tags (sound_id, tag_name) VALUES (?, ?)', [$sound_id, $tag_name]);
+                    if (!$tag_insert_result) {
+                        $tag_error = $db->getError();
+                        error_log('ERROR: Tag insert failed for "' . $tag_name . '": ' . $tag_error);
+                        $tag_errors[] = $tag_error;
+                    } else {
+                        error_log('DEBUG: Tag "' . $tag_name . '" inserted successfully');
+                    }
+                }
+            }
+            // タグ保存時のエラーがあればログに出力（本番環境ではログファイルに記録推奨）
+            if (!empty($tag_errors)) {
+                error_log('Tag save errors: ' . implode(' | ', $tag_errors));
+            }
+        } else {
+            error_log('DEBUG: tags_input is empty or sound_id is empty');
+        }
         setSuccessMessage('音源を追加しました。');
         redirect(ADMIN_URL . '/dashboard.php');
     } else {
@@ -134,6 +171,16 @@ require_once 'header.php';
                         <label for="description" class="form-label">説明（任意）</label>
                         <textarea id="description" name="description" class="form-control" 
                                   rows="4" placeholder="この音源について説明を入力..."></textarea>
+                    </div>
+
+                    <!-- タグ -->
+                    <div class="mb-3">
+                        <label for="tags" class="form-label">タグ（任意、スペース区切り）</label>
+                        <input type="text" id="tags" name="tags" class="form-control" 
+                               placeholder="例：#環境音 #雨 #自然">
+                        <small class="form-text text-muted d-block mt-2">
+                            💡 複数のタグをスペースで区切って入力してください。#は自動的に削除されます。
+                        </small>
                     </div>
 
                     <!-- 公開フラグ -->

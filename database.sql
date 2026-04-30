@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS sounds (
   original_name VARCHAR(255) NOT NULL COMMENT '元のアップロードファイル名',
   title VARCHAR(255) NOT NULL,
   description TEXT,
+  category_id INT COMMENT 'カテゴリーID',
   is_public TINYINT(1) DEFAULT 1 COMMENT '1=公開, 0=非公開',
   file_size INT NOT NULL COMMENT 'バイト単位',
   uploaded_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -28,7 +29,30 @@ CREATE TABLE IF NOT EXISTS sounds (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   INDEX idx_is_public (is_public),
   INDEX idx_uploaded_at (uploaded_at),
-  INDEX idx_title (title)
+  INDEX idx_title (title),
+  INDEX idx_category_id (category_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- タグテーブル
+CREATE TABLE IF NOT EXISTS tags (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  sound_id INT NOT NULL,
+  tag_name VARCHAR(50) NOT NULL COMMENT 'タグ名',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (sound_id) REFERENCES sounds(id) ON DELETE CASCADE,
+  INDEX idx_sound_id (sound_id),
+  INDEX idx_tag_name (tag_name)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- カテゴリーテーブル
+CREATE TABLE IF NOT EXISTS categories (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  display_order INT DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY unique_name (name),
+  INDEX idx_display_order (display_order)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 初期管理者ユーザー作成（例）

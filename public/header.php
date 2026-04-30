@@ -44,7 +44,7 @@
         
         
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #ffffff 100%);
+            background: linear-gradient(135deg,rgb(182, 242, 255) 0%,rgb(241, 203, 255) 50%,rgb(158, 237, 255) 100%);
             background-size: 200% 200%;
             animation: gradientFlow 15s ease infinite;
             font-family: 'LINESeedJP', 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -70,7 +70,7 @@
         }
         
         .navbar {
-            background: linear-gradient(135deg, #ffffff 0%, #f5edff 100%) !important;
+            background: linear-gradient(135deg,rgb(252, 246, 255) 0%,rgb(242, 222, 255) 100%) !important;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             padding: 0.5rem 1rem !important;
             position: sticky;
@@ -152,7 +152,7 @@
 
         .navbar-search-btn {
             padding: 6px 12px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #c7aaff 0%, #5981f1 100%);
             color: white;
             border: none;
             border-radius: 6px;
@@ -347,8 +347,8 @@
         .search-container {
             background: white;
             border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 30px;
+            padding: 16px;
+            margin-bottom: 24px;
             box-shadow: 0 4px 16px rgba(0,0,0,0.08);
         }
 
@@ -428,7 +428,7 @@
             font-size: 26px;
             font-weight: 700;
             font-family: 'LINESeedJP', sans-serif;
-            margin: 30px 0 25px 0;
+            margin: 24px 0 20px 0;
             padding: 0;
             color: #2c3e50;
             letter-spacing: -0.5px;
@@ -441,37 +441,42 @@
 
         /* ===== カテゴリーセクション ===== */
         .category-section {
-            margin-bottom: 50px;
+            margin-bottom: 40px;
         }
 
         .category-title {
-            font-size: 22px;
+            font-size: 36px;
             font-weight: 700;
             font-family: 'LINESeedJP', sans-serif;
-            margin: 0 0 20px 0;
-            padding: 15px 0 10px 0;
-            color: #667eea;
+            margin: 0 0 16px 0;
+            padding: 12px 0 8px 0;
+            color: #f1f1f3;
             letter-spacing: -0.5px;
             border-bottom: 3px solid rgba(102, 126, 234, 0.2);
             display: inline-block;
+            text-shadow: 0 2px 4px rgba(2, 8, 34, 0.25), 0 4px 8px rgba(22, 4, 39, 0.15);
         }
 
         /* ===== 音源リスト（テーブル行形式） ===== */
         .sounds-grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 20px;
+            gap: 16px;
             margin-bottom: 30px;
+            padding-left: 10mm;
+            padding-right: 10mm;
         }
 
         .sound-row {
             display: grid;
-            grid-template-columns: 7fr 2fr 1fr;
-            gap: 5px;
-            align-items: center;
+            /* title列を約0.7倍に縮小（余りは中央へ） */
+            /* controls列を約0.8倍に縮小（余りは中央へ） */
+            grid-template-columns: 20% 72% 8%;
+            gap: 12px;
+            align-items: flex-start;
             background: white;
             border-radius: 12px;
-            padding: 5px 8px;
+            padding: 6px;
             box-shadow: 0 3px 12px rgba(0,0,0,0.08);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border: 1px solid rgba(0,0,0,0.05);
@@ -504,35 +509,212 @@
         .sound-row-title {
             display: flex;
             align-items: center;
-            min-height: 12px;
+            align-self: center;
+            min-height: 10px;
         }
 
         .title-text {
-            font-size: 11px;
+            font-size: 52px;
             font-weight: 600;
-            color: #2c3e50;
+            color: #585f66;
             word-break: break-word;
             font-family: 'LINESeedJP', sans-serif;
-            line-height: 1.2;
+            line-height: 1.1;
+        }
+
+        /* 中央セクション（タグと説明） */
+        .sound-row-middle {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .tags-section {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        .tag-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15), rgba(118, 75, 162, 0.1));
+            color: #667eea;
+            padding: 2px 6px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .description-section {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.3;
+            font-family: 'LINESeedJP', sans-serif;
+        }
+
+        /* 右側セクション（試聴とDL） */
+        .sound-row-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            align-items: stretch;
         }
 
         .sound-row-player {
             display: flex;
             align-items: center;
+            flex: 1;
         }
 
+        /* ===== カスタムオーディオプレイヤー ===== */
         .audio-player {
+            display: none;
+        }
+
+        .custom-player {
+            display: flex;
+            align-items: center;
+            gap: 6px;
             width: 100%;
-            height: 16px;
-            border-radius: 6px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%);
+            border-radius: 8px;
+            padding: 6px 8px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .custom-player:hover {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
+            border-color: rgba(102, 126, 234, 0.4);
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
+        }
+
+        .play-btn {
+            width: 22px;
+            height: 22px;
+            border: none;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+        }
+
+        .play-btn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .play-btn:active {
+            transform: scale(0.92);
+        }
+
+        .progress-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            min-width: 0;
+        }
+
+        .progress-bar-wrapper {
+            width: 100%;
+            height: 3px;
+            background: rgba(102, 126, 234, 0.2);
+            border-radius: 2px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 2px;
+            width: 0%;
+            transition: width 0.1s linear;
+            position: relative;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            right: -5px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 10px;
+            height: 10px;
+            background: #667eea;
+            border-radius: 50%;
+            box-shadow: 0 2px 6px rgba(102, 126, 234, 0.4);
+        }
+
+        .time-display {
+            font-size: 9px;
+            color: #666;
+            font-weight: 500;
+            font-family: 'Inter', monospace;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .volume-control {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+
+        .volume-icon {
+            font-size: 11px;
+            color: #667eea;
+        }
+
+        .volume-slider {
+            width: 32px;
+            height: 3px;
+            cursor: pointer;
             accent-color: #667eea;
+            -webkit-appearance: none;
+            appearance: none;
+            background: rgba(102, 126, 234, 0.2);
+            border-radius: 2px;
+            outline: none;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(102, 126, 234, 0.3);
+        }
+
+        .volume-slider::-moz-range-thumb {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 6px rgba(102, 126, 234, 0.3);
         }
 
         .sound-row-download {
             display: flex;
-            flex-direction: column;
-            gap: 2px;
             align-items: center;
+            justify-content: center;
         }
 
         .file-size {
@@ -543,8 +725,8 @@
 
         .download-btn {
             width: 100%;
-            padding: 3px 4px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 4px 8px;
+            background: linear-gradient(135deg, #c7aaff 0%, #5981f1 100%);
             color: white;
             border: none;
             border-radius: 8px;
@@ -555,8 +737,8 @@
             align-items: center;
             justify-content: center;
             transition: all 0.3s ease;
-            font-size: 8px;
-            min-height: 18px;
+            font-size: 11px;
+            min-height: 22px;
             font-family: 'Inter', sans-serif;
         }
 
@@ -622,17 +804,31 @@
 
             .sounds-grid {
                 grid-template-columns: 1fr 1fr;
-                gap: 28px;
+                gap: 22px;
             }
 
             .sound-row {
-                grid-template-columns: 7fr 2fr 1fr;
-                padding: 6px 8px;
-                gap: 8px;
+                /* title列を約0.7倍に縮小（余りは中央へ） */
+                /* controls列を約0.8倍に縮小（余りは中央へ） */
+                grid-template-columns: 9fr 4.2fr 0.8fr;
+                padding: 5px 6px;
+                gap: 6px;
             }
 
-            .audio-player {
-                min-width: 150px;
+            .custom-player {
+                min-width: 144px;
+                padding: 6px 8px;
+                gap: 6px;
+            }
+
+            .play-btn {
+                width: 26px;
+                height: 26px;
+                font-size: 11px;
+            }
+
+            .volume-slider {
+                width: 40px;
             }
             
             .main-container {
@@ -664,12 +860,12 @@
             
             .section-title {
                 font-size: 30px;
-                margin: 35px 0 28px 0;
+                margin: 28px 0 22px 0;
             }
 
             .category-title {
                 font-size: 26px;
-                margin: 40px 0 25px 0;
+                margin: 32px 0 20px 0;
             }
         }
 
@@ -692,23 +888,64 @@
             }
 
             .sound-row {
-                grid-template-columns: 7fr 2fr 1fr;
-                padding: 8px 12px;
-                gap: 10px;
+                /* title列を約0.7倍に縮小（余りは中央へ） */
+                /* controls列を約0.8倍に縮小（余りは中央へ） */
+                grid-template-columns: 5fr 4.2fr 0.8fr;
+                padding: 6px 9px;
+                gap: 8px;
             }
 
-            .audio-player {
+            .custom-player {
                 min-width: 160px;
-                height: 34px;
+                padding: 8px 9px;
+                gap: 8px;
+            }
+
+            .play-btn {
+                width: 29px;
+                height: 29px;
+                font-size: 13px;
+            }
+
+            .progress-bar-wrapper {
+                height: 4px;
+            }
+
+            .time-display {
+                font-size: 10px;
+            }
+
+            .volume-slider {
+                width: 48px;
             }
 
             .title-text {
-                font-size: 17px;
+                font-size: 20.7px;
+            }
+
+            /* PC版はタグ・説明を折り返さない（はみ出しは省略） */
+            .sound-row-middle {
+                min-width: 0;
+            }
+
+            .tags-section {
+                flex-wrap: nowrap;
+                overflow: hidden;
+            }
+
+            .tag-badge {
+                white-space: nowrap;
+            }
+
+            .description-section {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
 
             .category-title {
                 font-size: 28px;
-                margin: 50px 0 30px 0;
+                margin: 40px 0 24px 0;
             }
         }
     </style>
@@ -740,6 +977,81 @@
                     menuDropdown.classList.remove('active');
                 }
             });
+
+            // ===== カスタムオーディオプレイヤー機能 =====
+            const players = document.querySelectorAll('.custom-player');
+            
+            players.forEach(playerWrapper => {
+                const playBtn = playerWrapper.querySelector('.play-btn');
+                const audio = playerWrapper.querySelector('.audio-player');
+                const progressBar = playerWrapper.querySelector('.progress-bar');
+                const progressBarWrapper = playerWrapper.querySelector('.progress-bar-wrapper');
+                const timeDisplay = playerWrapper.querySelector('.time-display');
+                const volumeSlider = playerWrapper.querySelector('.volume-slider');
+
+                if (!audio) return;
+
+                // 再生/一時停止
+                playBtn.addEventListener('click', function() {
+                    if (audio.paused) {
+                        audio.play();
+                        playBtn.textContent = '⏸';
+                    } else {
+                        audio.pause();
+                        playBtn.textContent = '▶';
+                    }
+                });
+
+                // 再生中の更新
+                audio.addEventListener('timeupdate', function() {
+                    const percent = (audio.currentTime / audio.duration) * 100;
+                    progressBar.style.width = percent + '%';
+                    updateTimeDisplay();
+                });
+
+                // メタデータ読み込み
+                audio.addEventListener('loadedmetadata', function() {
+                    updateTimeDisplay();
+                });
+
+                // 再生終了
+                audio.addEventListener('ended', function() {
+                    playBtn.textContent = '▶';
+                });
+
+                // プログレスバークリック
+                progressBarWrapper.addEventListener('click', function(e) {
+                    const rect = progressBarWrapper.getBoundingClientRect();
+                    const percent = (e.clientX - rect.left) / rect.width;
+                    audio.currentTime = percent * audio.duration;
+                });
+
+                // ボリューム調整
+                if (volumeSlider) {
+                    volumeSlider.addEventListener('input', function() {
+                        audio.volume = this.value / 100;
+                    });
+                    audio.volume = volumeSlider.value / 100;
+                }
+
+                // 時間表示の更新
+                function updateTimeDisplay() {
+                    const formatTime = (time) => {
+                        if (isNaN(time)) return '0:00';
+                        const minutes = Math.floor(time / 60);
+                        const seconds = Math.floor(time % 60);
+                        return minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+                    };
+
+                    const current = formatTime(audio.currentTime);
+                    const duration = formatTime(audio.duration);
+                    timeDisplay.textContent = current + ' / ' + duration;
+                }
+
+                // 初期状態
+                playBtn.textContent = '▶';
+                updateTimeDisplay();
+            });
         });
     </script>
 </head>
@@ -749,7 +1061,7 @@
         <div class="container-fluid">
             <div class="navbar-start">
                 <a class="navbar-brand fw-bold" href="/">
-                    <img src="<?php echo SITE_URL; ?>/assets/images/logo.png" alt="Logo" class="navbar-logo">
+                    <!-- <img src="<?php echo SITE_URL; ?>/assets/images/logo.png" alt="Logo" class="navbar-logo"> -->
                     <img src="<?php echo SITE_URL; ?>/assets/images/brand-name.png" alt="<?php echo APP_NAME; ?>" class="brand-name-img">
                 </a>
             </div>

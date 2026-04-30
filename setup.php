@@ -1,6 +1,6 @@
 <?php
 /**
- * 初期セットアップスクリプト
+ * 初期セットアップスクリプトだよ
  * 管理者ユーザーのハッシュ化されたパスワードを生成します
  * 
  * 使い方：
@@ -79,6 +79,7 @@ CREATE TABLE sounds (
   original_name VARCHAR(255) NOT NULL,
   title VARCHAR(255) NOT NULL,
   description TEXT,
+  category_id INT,
   is_public TINYINT(1) DEFAULT 1,
   file_size INT NOT NULL,
   uploaded_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -86,7 +87,28 @@ CREATE TABLE sounds (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   INDEX idx_is_public (is_public),
   INDEX idx_uploaded_at (uploaded_at),
-  INDEX idx_title (title)
+  INDEX idx_title (title),
+  INDEX idx_category_id (category_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE categories (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  display_order INT DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY unique_name (name),
+  INDEX idx_display_order (display_order)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE tags (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  sound_id INT NOT NULL,
+  tag_name VARCHAR(50) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (sound_id) REFERENCES sounds(id) ON DELETE CASCADE,
+  INDEX idx_sound_id (sound_id),
+  INDEX idx_tag_name (tag_name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
         </div>
 

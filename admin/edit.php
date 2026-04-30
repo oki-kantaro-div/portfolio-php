@@ -35,6 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // 入力値取得
     $title = $_POST['title'] ?? '';
     $description = $_POST['description'] ?? '';
+    $tags_input = $_POST['tags'] ?? '';
     $category_id = (int)($_POST['category_id'] ?? 0);
     $is_public = isset($_POST['is_public']) ? 1 : 0;
 
@@ -77,6 +78,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $sql = 'UPDATE sounds SET title = ?, description = ?, category_id = ?, is_public = ?, filename = ?, original_name = ?, file_size = ? WHERE id = ?';
     
     if ($db->execute($sql, [$title, $description, $category_id ?: null, $is_public, $filename, $original_name, $file_size, $id])) {
+        // 既存のタグを削除
+        $db->execute('DELETE FROM tags WHERE sound_id = ?', [$id]);
+        
+        // 新しいタグを保存
+        if (!empty($tags_input)) {
+            $tags_array = array_filter(array_map('trim', explode(' ', $tags_input)));
+            $tag_errors = [];
+            foreach ($tags_array as $tag_name) {
+                // # を削除
+                $tag_name = ltrim($tag_name, '#');
+                if (!empty($tag_name)) {
+                    if (!$db->execute('INSERT INTO tags (sound_id, tag_name) VALUES (?, ?)', [$id, $tag_name])) {
+                        $tag_errors[] = $db->getError();
+                    }
+                }
+            }
+            // タグ保存時のエラーがあればログに出力
+            if (!empty($tag_errors)) {
+                error_log('Tag save errors: ' . implode(' | ', $tag_errors));
+            }
+        }
+        
         setSuccessMessage('音源を更新しました。');
         redirect(ADMIN_URL . '/dashboard.php');
     } else {
@@ -88,6 +111,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // 初期値
 $error_message = getSessionMessage('error');
 $csrf_token = generateCSRFToken();
+
+// 既存のタグを取得
+$existing_tags = $db->select('SELECT tag_name FROM tags WHERE sound_id = ? ORDER BY created_at ASC', [$id]);
+$tags_string = implode(' ', array_map(function($tag) { return '#' . $tag['tag_name']; }, $existing_tags));
 
 require_once 'header.php';
 ?>
@@ -166,6 +193,17 @@ require_once 'header.php';
                         <label for="description" class="form-label">説明（任意）</label>
                         <textarea id="description" name="description" class="form-control" 
                                   rows="4"><?php echo esc($sound['description']); ?></textarea>
+                    </div>
+
+                    <!-- タグ -->
+                    <div class="mb-3">
+                        <label for="tags" class="form-label">タグ（任意、スペース区切り）</label>
+                        <input type="text" id="tags" name="tags" class="form-control" 
+                               value="<?php echo esc($tags_string); ?>"
+                               placeholder="例：#環境音 #雨 #自然">
+                        <small class="form-text text-muted d-block mt-2">
+                            💡 複数のタグをスペースで区切って入力してください。#は自動的に削除されます。
+                        </small>
                     </div>
 
                     <!-- 公開フラグ -->
