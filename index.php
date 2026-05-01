@@ -13,6 +13,7 @@ $search = trim($search);
 
 // ヘッダーに渡す
 $navbar_search = $search;
+$navbar_categories = [];
 
 // ===== カテゴリーごとにグループ化された音源取得 =====
 $sql_categories = "
@@ -23,6 +24,7 @@ $sql_categories = "
 ";
 
 $categories = $db->select($sql_categories);
+$navbar_categories = $categories;
 
 // グループ化されたデータを構築
 $grouped_sounds = [];
@@ -103,7 +105,12 @@ require_once 'public/header.php';
     <?php else: ?>
         <?php foreach ($grouped_sounds as $group): ?>
             <!-- カテゴリーセクション -->
-            <div class="category-section">
+            <?php
+            $section_id = $group['category']
+                ? ('category-' . $group['category']['id'])
+                : 'category-uncategorized';
+            ?>
+            <div class="category-section" id="<?php echo esc($section_id); ?>">
                 <h2 class="category-title">
                     <?php
                     if ($group['category']) {
@@ -174,3 +181,75 @@ require_once 'public/header.php';
         <?php endforeach; ?>
     <?php endif; ?>
 </div>
+
+<script>
+// TOPページ：ロード後5秒間操作がなければ自動スクロール（1回だけ判定）
+document.addEventListener('DOMContentLoaded', () => {
+    const IDLE_MS = 5000;
+    const SCROLL_STEP_PX = 1;      // 1tickあたりのスクロール量
+    const SCROLL_INTERVAL_MS = 16; // 約60fps
+
+    let idleTimer = null;
+    let scrollTimer = null;
+    let disabledForThisPage = false;
+
+    const atBottom = () =>
+        (window.innerHeight + window.scrollY) >= (document.documentElement.scrollHeight - 2);
+
+    const stopAutoScroll = () => {
+        if (scrollTimer) {
+            clearInterval(scrollTimer);
+            scrollTimer = null;
+        }
+    };
+
+    const startAutoScroll = () => {
+        if (disabledForThisPage) return;
+        if (scrollTimer) return;
+        scrollTimer = setInterval(() => {
+            if (document.hidden || atBottom()) {
+                stopAutoScroll();
+                return;
+            }
+            window.scrollBy(0, SCROLL_STEP_PX);
+        }, SCROLL_INTERVAL_MS);
+    };
+
+    const armOneShotIdleCheck = () => {
+        if (idleTimer) clearTimeout(idleTimer);
+        idleTimer = setTimeout(() => {
+            if (!document.hidden && !disabledForThisPage) startAutoScroll();
+        }, IDLE_MS);
+    };
+
+    const onUserActivity = () => {
+        stopAutoScroll();
+        disabledForThisPage = true;
+        if (idleTimer) {
+            clearTimeout(idleTimer);
+            idleTimer = null;
+        }
+    };
+
+    // 初回：ロード後に待機→自動スクロール
+    armOneShotIdleCheck();
+
+    // ユーザー操作が1回でもあれば、そのページ滞在中は無効化（再開しない）
+    const activityEvents = [
+        'pointerdown',
+        'mousedown',
+        'touchstart',
+        'wheel',
+        'scroll',
+        'keydown'
+    ];
+    activityEvents.forEach(evt => window.addEventListener(evt, onUserActivity, { passive: true }));
+
+    // タブ非表示中は止める（戻っても再アームしない）
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            stopAutoScroll();
+        }
+    });
+});
+</script>

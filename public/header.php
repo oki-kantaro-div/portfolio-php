@@ -133,6 +133,64 @@
             order: 1;
         }
 
+        .navbar-categories {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            flex: 1 1 auto;
+            min-width: 0;
+            order: 1;
+        }
+
+        .navbar-categories-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #555;
+            white-space: nowrap;
+        }
+
+        .navbar-categories-list {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            overflow-x: auto;
+            overscroll-behavior-x: contain;
+            -webkit-overflow-scrolling: touch;
+            padding: 2px 0;
+            scrollbar-width: thin;
+            min-width: 0;
+        }
+
+        .navbar-categories-list::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .navbar-categories-list::-webkit-scrollbar-thumb {
+            background: rgba(0,0,0,0.18);
+            border-radius: 999px;
+        }
+
+        .navbar-category-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.65);
+            border: 1px solid rgba(0,0,0,0.08);
+            text-decoration: none;
+            color: #2c3e50;
+            font-size: 24px;
+            font-weight: 600;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+
+        .navbar-category-link:hover {
+            background: rgba(255,255,255,0.95);
+            color: #667eea;
+            transform: translateY(-1px);
+        }
+
         .navbar-search-input {
             flex: 0 0 auto;
             min-width: 140px;
@@ -179,17 +237,17 @@
 
         /* ハンバーガーメニュー */
         .hamburger {
-            width: 36px;
-            height: 36px;
+            width: 54px;
+            height: 54px;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            gap: 5px;
+            gap: 7.5px;
             cursor: pointer;
             background: rgba(255, 255, 255, 0.5);
             border: none;
             border-radius: 6px;
-            padding: 6px 8px;
+            padding: 9px 12px;
             transition: all 0.3s ease;
         }
 
@@ -199,7 +257,7 @@
 
         .hamburger span {
             width: 100%;
-            height: 3px;
+            height: 4.5px;
             background: #333;
             border-radius: 2px;
             transition: all 0.3s ease;
@@ -207,7 +265,7 @@
         }
 
         .hamburger.active span:nth-child(1) {
-            transform: rotate(45deg) translate(8px, 8px);
+            transform: rotate(45deg) translate(12px, 12px);
         }
 
         .hamburger.active span:nth-child(2) {
@@ -215,7 +273,7 @@
         }
 
         .hamburger.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(7px, -7px);
+            transform: rotate(-45deg) translate(10.5px, -10.5px);
         }
 
         /* ドロップダウンメニュー */
@@ -248,6 +306,21 @@
             font-family: 'LINESeedJP', sans-serif;
         }
 
+        .menu-dropdown a.menu-home {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px 20px;
+        }
+
+        .menu-dropdown a.menu-home img {
+            height: 34px;
+            width: auto;
+            object-fit: contain;
+            display: block;
+        }
+
         .menu-dropdown a:last-child {
             border-bottom: none;
         }
@@ -260,6 +333,9 @@
         
         @media (min-width: 768px) {
             .navbar-search {
+                display: flex;
+            }
+            .navbar-categories {
                 display: flex;
             }
         }
@@ -1065,12 +1141,28 @@
                     <img src="<?php echo SITE_URL; ?>/assets/images/brand-name.png" alt="<?php echo APP_NAME; ?>" class="brand-name-img">
                 </a>
             </div>
-            <form method="GET" class="navbar-search">
-                <input type="text" name="search" class="navbar-search-input" 
-                       placeholder="🔍 検索..." 
-                       value="<?php echo isset($navbar_search) ? esc($navbar_search) : ''; ?>">
-                <button type="submit" class="navbar-search-btn">検索</button>
-            </form>
+            <?php if (empty($hide_nav_search) || $hide_nav_search === false): ?>
+                <form method="GET" class="navbar-search">
+                    <input type="text" name="search" class="navbar-search-input" 
+                           placeholder="🔍 検索..." 
+                           value="<?php echo isset($navbar_search) ? esc($navbar_search) : ''; ?>">
+                    <button type="submit" class="navbar-search-btn">検索</button>
+                </form>
+                <?php if (!empty($navbar_categories) && is_array($navbar_categories)): ?>
+                    <div class="navbar-categories" aria-label="カテゴリ一覧">
+                        <div class="navbar-categories-list">
+                            <?php foreach ($navbar_categories as $cat): ?>
+                                <a class="navbar-category-link"
+                                   href="<?php echo SITE_URL; ?>/#category-<?php echo esc($cat['id']); ?>">
+                                    <?php echo esc($cat['name']); ?>
+                                </a>
+                            <?php endforeach; ?>
+                            <a class="navbar-category-link"
+                               href="<?php echo SITE_URL; ?>/#category-uncategorized">その他</a>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            <?php endif; ?>
             <div class="navbar-menu">
                 <button class="hamburger" id="hamburgerBtn" aria-label="メニュー">
                     <span></span>
@@ -1078,10 +1170,13 @@
                     <span></span>
                 </button>
                 <div class="menu-dropdown" id="menuDropdown">
-                    <a href="#about-yuya">ゆうやについて</a>
-                    <a href="#about-site">サイトについて</a>
-                    <a href="#marketing">マーケティング</a>
-                    <a href="#terms">利用規約</a>
+                    <a class="menu-home" href="<?php echo SITE_URL; ?>/">
+                        <img src="<?php echo SITE_URL; ?>/assets/images/logo.png" alt="TOP">
+                    </a>
+                    <a href="<?php echo SITE_URL; ?>/details/deteils.php">利用規約</a>
+                    <a href="#about-yuya">効果音リクエスト/お問い合わせ</a>
+                    <a href="#about-site">製作者について</a>
+                    <a href="#marketing">プライバシーポリシー</a>
                     <a href="/portfolio-php/admin/">管理人</a>
                 </div>
             </div>
