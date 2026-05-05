@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../functions.php';
 
-$page_title = '利用規約';
+$page_title = '製作者について';
 
 // 利用規約ページは検索/カテゴリ不要
 $hide_nav_search = true;
@@ -13,7 +13,7 @@ require_once __DIR__ . '/../public/header.php';
 ?>
 
 <div class="page-with-reveal">
-    <h1 class="section-title reveal-item">利用規約</h1>
+    <h1 class="section-title reveal-item">製作者について</h1>
 
     <style>
         .reveal-item {
@@ -68,50 +68,44 @@ require_once __DIR__ . '/../public/header.php';
 
     <div class="terms-wrap">
         <section class="terms-section reveal-item">
-            <h2 class="terms-title">■ ご利用について</h2>
-            <p class="terms-body">オトリウムの効果音は、個人・法人問わず無料でご利用いただけます。
-商用利用も可能ですので、動画制作や配信、アプリ、ゲームなど、さまざまな用途でお使いください。
-「ちょっと使ってみようかな？」くらいの軽い気持ちで、ぜひお気軽にご利用ください！</p>
+            <h2 class="terms-title">■ はじめに</h2>
+            <p class="terms-body">はじめまして。「オトリウム」を運営している、Y（仮名）です^_^
+このページでは、少しだけ自分のことと、このサービスを始めた想いについてお話しします！</p>
         </section>
 
         <section class="terms-section reveal-item">
-            <h2 class="terms-title">■ クレジットの表記について</h2>
-            <p class="terms-body">効果音をご利用の際、概要欄やクレジットに「オトリウム」またはサイトURLを記載していただけるととても嬉しいです^_^
-こちらは任意のため、難しい場合は無理に記載しなくても構いません。</p>
+            <h2 class="terms-title">■ 音楽との出会い</h2>
+            <p class="terms-body">幼少期、親のすすめでドラムを始めたのが音楽との最初の出会いでした。
+そこから中学・高校と、ドラムだけでなくギターやベースにも触れ、多くの時間を音楽に費やしてました。
+テレビやアニメ、ゲームも全くしなかったので友達の話に合わせるのは苦慮した記憶があります笑</p>
         </section>
 
         <section class="terms-section reveal-item">
-            <h2 class="terms-title">■ 禁止事項</h2>
-            <p class="terms-body">以下のような目的でのご利用はご遠慮ください。
-・公序良俗に反するコンテンツでの使用
-・違法行為や犯罪に関連する用途での使用
-・第三者を誹謗中傷する目的での使用
-・当サイトや制作者の信用を損なうような使用
-また、素材をメインコンテンツとして成立させるような利用（例:素材集としての再配布など）もご遠慮ください。</p>
+            <h2 class="terms-title">■恋愛と大学時代</h2>
+            <p class="terms-body">大学時代はというと……正直に言うと、恋愛に夢中になってしまい、音楽から少し離れていた時期がありました。
+ですが、その後の失恋をきっかけに、もう一度音楽と向き合うようになりました。
+以前よりも深く音楽に取り組むことができ、自分の音楽スキルとしても大きく成長したと感じています。
+
+そしてなにより、共に夢を目指す仲間とも出会うことができたので母校に入って本当によかったなーと思います！</p>
         </section>
 
         <section class="terms-section reveal-item">
-            <h2 class="terms-title">■ 著作権について</h2>
-            <p class="terms-body">当サイトで配布している効果音の著作権は、すべて制作者に帰属します。
-そのため、以下の行為は禁止とさせていただきます。
-①自作発言
-②素材そのものの再配布、販売
-③素材をそのまま、またはほぼそのままの形で配布する行為
-最低限のマナーとして守っていただければと思います。</p>
+            <h2 class="terms-title">■ オトリウムを始めた理由</h2>
+            <p class="terms-body">昨今では生成AIの進化もあり、クリエイティブの形が大きく変わってきています。
+その中で、「自分で何かを作る機会」が減ってきていると感じることもありました。
+
+だからこそ、
+少しでもクリエイターの力になれるものを作りたい
+そんな想いから、「オトリウム」を立ち上げました。</p>
         </section>
 
         <section class="terms-section reveal-item">
-            <h2 class="terms-title">■ 免責事項</h2>
-            <p class="terms-body">当サイトの効果音を利用したことによって発生したトラブルや損害について、制作者は一切の責任を負いかねます。
-あらかじめご了承ください。</p>
-        </section>
+            <h2 class="terms-title">■ 最後に</h2>
+            <p class="terms-body">このサイトの効果音が、誰かの動画や作品づくりの一部になって、ほんの少しでもその人の活動や人生を明るくできたら、とても嬉しいです。
 
-        <section class="terms-section reveal-item">
-            <h2 class="terms-title">■ おわりに</h2>
-            <p class="terms-body">最後までお読みいただきまして、誠にありがとうございました！
-堅苦しいルールで縛るつもりはありません。
-「この音いいじゃーん！使いますー！」くらいの感覚で、どんどん活用していただけたら嬉しいです！
-オトリウムが、あなたの作品づくりの力になれたら幸いです^_^</p>
+気軽に！自由に！！どんどん使ってもらえたら嬉しいです！
+
+最後までお読みいただいて、ありがとうございました！^_^</p>
         </section>
     </div>
 

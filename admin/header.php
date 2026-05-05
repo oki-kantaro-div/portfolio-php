@@ -182,6 +182,9 @@
                 <a href="<?php echo ADMIN_URL; ?>/upload.php" class="<?php echo (basename($_SERVER['PHP_SELF']) == 'upload.php') ? 'active' : ''; ?>">
                     ⬆️ 新規追加
                 </a>
+                <a href="<?php echo ADMIN_URL; ?>/news.php" class="<?php echo (basename($_SERVER['PHP_SELF']) == 'news.php' || basename($_SERVER['PHP_SELF']) == 'news-create.php' || basename($_SERVER['PHP_SELF']) == 'news-edit.php') ? 'active' : ''; ?>">
+                    📰 お知らせ管理
+                </a>
             </div>
 
             <!-- メインコンテンツ -->

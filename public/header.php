@@ -420,6 +420,114 @@
             z-index: 2;
         }
 
+        /* ===== TOP お知らせ ===== */
+        .top-news {
+            max-width: 1200px;
+            margin: 8px auto 12px;
+            padding: 8px 10px;
+            background: rgba(255, 255, 255, 0.92);
+            border-radius: 8px;
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(102, 126, 234, 0.18);
+        }
+
+        .top-news-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 7px;
+            margin-bottom: 6px;
+        }
+
+        .top-news-title {
+            margin: 0;
+            font-size: 14px;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+        }
+
+        .top-news-carousel {
+            overflow: hidden;
+            border-radius: 8px;
+            cursor: grab;
+            user-select: none;
+            touch-action: pan-y;
+        }
+
+        .top-news-carousel.is-dragging {
+            cursor: grabbing;
+        }
+
+        .top-news-track {
+            display: flex;
+            width: 100%;
+            transform: translateX(0%);
+            transition: transform 900ms ease;
+            will-change: transform;
+        }
+
+        .top-news-slide {
+            flex: 0 0 100%;
+            width: 100%;
+        }
+
+        .top-news-slide .top-news-item {
+            height: 100%;
+        }
+
+        .top-news-item {
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 7px;
+            padding: 7px 7px;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+        }
+
+        .top-news-item.is-important {
+            border-color: rgba(220, 53, 69, 0.35);
+            box-shadow: 0 10px 24px rgba(220, 53, 69, 0.12);
+        }
+
+        .top-news-item-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 4px;
+        }
+
+        .top-news-item-title {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 800;
+            letter-spacing: -0.2px;
+        }
+
+        .top-news-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 1px 6px;
+            border-radius: 999px;
+            font-size: 10px;
+            font-weight: 800;
+            background: rgba(220, 53, 69, 0.12);
+            color: #dc3545;
+            border: 1px solid rgba(220, 53, 69, 0.28);
+        }
+
+        .top-news-item-date {
+            color: rgba(0, 0, 0, 0.55);
+            white-space: nowrap;
+        }
+
+        .top-news-item-body {
+            color: rgba(0, 0, 0, 0.78);
+            line-height: 1.6;
+            font-size: 12px;
+            white-space: normal;
+        }
+
         .search-container {
             background: white;
             border-radius: 12px;
@@ -1175,8 +1283,8 @@
                     </a>
                     <a href="<?php echo SITE_URL; ?>/details/deteils.php">利用規約</a>
                     <a href="#about-yuya">効果音リクエスト/お問い合わせ</a>
-                    <a href="#about-site">製作者について</a>
-                    <a href="#marketing">プライバシーポリシー</a>
+                    <a href="<?php echo SITE_URL; ?>/creator\creator.php">製作者について</a>
+                    <a href="<?php echo SITE_URL; ?>/privacy/privacy.php">プライバシーポリシー</a>
                     <a href="/portfolio-php/admin/">管理人</a>
                 </div>
             </div>

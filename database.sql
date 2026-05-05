@@ -55,6 +55,22 @@ CREATE TABLE IF NOT EXISTS categories (
   INDEX idx_display_order (display_order)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- お知らせテーブル
+-- 公開開始日〜公開終了日の範囲で公開状態を判定する
+CREATE TABLE IF NOT EXISTS NewsRelease (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(255) NOT NULL COMMENT 'お知らせタイトル',
+  body TEXT NOT NULL COMMENT 'お知らせ本文',
+  is_important TINYINT(1) NOT NULL DEFAULT 0 COMMENT '1=重要',
+  publish_start DATETIME NOT NULL COMMENT '公開開始日',
+  publish_end DATETIME NULL COMMENT '公開終了日（NULLなら終了なし）',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_publish_start (publish_start),
+  INDEX idx_publish_end (publish_end),
+  INDEX idx_is_important (is_important)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- 初期管理者ユーザー作成（例）
 -- ユーザーID: admin
 -- パスワード: admin123

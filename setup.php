@@ -110,6 +110,20 @@ CREATE TABLE tags (
   INDEX idx_sound_id (sound_id),
   INDEX idx_tag_name (tag_name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE NewsRelease (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(255) NOT NULL COMMENT 'お知らせタイトル',
+  body TEXT NOT NULL COMMENT 'お知らせ本文',
+  is_important TINYINT(1) NOT NULL DEFAULT 0 COMMENT '1=重要',
+  publish_start DATETIME NOT NULL COMMENT '公開開始日',
+  publish_end DATETIME NULL COMMENT '公開終了日（NULLなら終了なし）',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_publish_start (publish_start),
+  INDEX idx_publish_end (publish_end),
+  INDEX idx_is_important (is_important)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
         </div>
 
         <h3>2. 初期管理者ユーザー作成</h3>
