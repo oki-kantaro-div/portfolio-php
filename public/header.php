@@ -1132,6 +1132,168 @@
                 margin: 40px 0 24px 0;
             }
         }
+
+        /* ===== テロップセクション ===== */
+        .telop-section {
+            width: 100%;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, rgba(255, 182, 193, 0.3) 0%, rgba(176, 224, 230, 0.3) 100%);
+            text-align: center;
+            margin: 20px 0 40px 0;
+        }
+
+        .telop-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .telop-text {
+            font-size: 32px;
+            font-weight: 700;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            font-family: 'LINESeedJP', sans-serif;
+        }
+
+        /* ===== カテゴリリストセクション ===== */
+        .categories-list-section {
+            width: 100%;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, rgba(255, 218, 185, 0.2) 0%, rgba(221, 160, 221, 0.2) 100%);
+            margin: 0 0 40px 0;
+        }
+
+        .categories-list-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .categories-list-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin: 0 0 30px 0;
+            color: #333;
+            text-align: center;
+            font-family: 'LINESeedJP', sans-serif;
+        }
+
+        .categories-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            width: 100%;
+        }
+
+        .category-card {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100px;
+            padding: 16px;
+            background: white;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            font-family: 'LINESeedJP', sans-serif;
+        }
+
+        .category-card:hover {
+            background: linear-gradient(135deg, rgb(182, 242, 255) 0%, rgb(241, 203, 255) 100%);
+            border-color: rgba(0, 0, 0, 0.2);
+            transform: translateY(-4px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+        }
+
+        .category-card-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            text-align: center;
+            word-break: break-word;
+        }
+
+        /* ===== カテゴリページ用ヘッダー ===== */
+        .category-page-header {
+            padding: 40px 20px;
+            background: linear-gradient(135deg, rgba(182, 242, 255, 0.2) 0%, rgba(241, 203, 255, 0.2) 100%);
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .category-page-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #333;
+            margin: 0 0 10px 0;
+            font-family: 'LINESeedJP', sans-serif;
+        }
+
+        .category-page-subtitle {
+            font-size: 14px;
+            color: #666;
+            margin: 0;
+            font-family: 'LINESeedJP', sans-serif;
+        }
+
+        /* ===== レスポンシブ対応 ===== */
+        @media (max-width: 768px) {
+            .telop-text {
+                font-size: 24px;
+            }
+
+            .categories-list {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                gap: 12px;
+            }
+
+            .category-card {
+                min-height: 80px;
+            }
+
+            .category-card-name {
+                font-size: 14px;
+            }
+
+            .category-page-title {
+                font-size: 24px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .telop-section {
+                padding: 40px 16px;
+            }
+
+            .telop-text {
+                font-size: 20px;
+            }
+
+            .categories-list-section {
+                padding: 30px 16px;
+            }
+
+            .categories-list-title {
+                font-size: 18px;
+                margin-bottom: 20px;
+            }
+
+            .categories-list {
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+                gap: 10px;
+            }
+
+            .category-card {
+                min-height: 70px;
+                padding: 12px;
+            }
+
+            .category-card-name {
+                font-size: 12px;
+            }
+        }
     </style>
     <script>
         // ハンバーガーメニュー機能
@@ -1250,7 +1412,7 @@
                 </a>
             </div>
             <?php if (empty($hide_nav_search) || $hide_nav_search === false): ?>
-                <form method="GET" class="navbar-search">
+                <form method="GET" action="<?php echo SITE_URL; ?>/category.php" class="navbar-search">
                     <input type="text" name="search" class="navbar-search-input" 
                            placeholder="🔍 検索..." 
                            value="<?php echo isset($navbar_search) ? esc($navbar_search) : ''; ?>">
@@ -1261,12 +1423,12 @@
                         <div class="navbar-categories-list">
                             <?php foreach ($navbar_categories as $cat): ?>
                                 <a class="navbar-category-link"
-                                   href="<?php echo SITE_URL; ?>/#category-<?php echo esc($cat['id']); ?>">
+                                   href="<?php echo SITE_URL; ?>/category.php?id=<?php echo esc($cat['id']); ?>">
                                     <?php echo esc($cat['name']); ?>
                                 </a>
                             <?php endforeach; ?>
                             <a class="navbar-category-link"
-                               href="<?php echo SITE_URL; ?>/#category-uncategorized">その他</a>
+                               href="<?php echo SITE_URL; ?>/category.php?id=uncategorized">その他</a>
                         </div>
                     </div>
                 <?php endif; ?>
