@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS sounds (
   original_name VARCHAR(255) NOT NULL COMMENT '元のアップロードファイル名',
   title VARCHAR(255) NOT NULL,
   description TEXT,
-  category_id INT COMMENT 'カテゴリーID',
+  category_id INT COMMENT '小カテゴリID（sub_categories.id）',
   is_public TINYINT(1) DEFAULT 1 COMMENT '1=公開, 0=非公開',
   file_size INT NOT NULL COMMENT 'バイト単位',
   uploaded_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -30,7 +30,8 @@ CREATE TABLE IF NOT EXISTS sounds (
   INDEX idx_is_public (is_public),
   INDEX idx_uploaded_at (uploaded_at),
   INDEX idx_title (title),
-  INDEX idx_category_id (category_id)
+  INDEX idx_category_id (category_id),
+  FOREIGN KEY (category_id) REFERENCES sub_categories(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- タグテーブル
@@ -44,14 +45,28 @@ CREATE TABLE IF NOT EXISTS tags (
   INDEX idx_tag_name (tag_name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- カテゴリーテーブル
+-- 大カテゴリテーブル
 CREATE TABLE IF NOT EXISTS categories (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(100) NOT NULL,
+  name VARCHAR(100) NOT NULL COMMENT '大カテゴリ名',
   display_order INT DEFAULT 0,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   UNIQUE KEY unique_name (name),
+  INDEX idx_display_order (display_order)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 小カテゴリテーブル
+CREATE TABLE IF NOT EXISTS sub_categories (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  parent_id INT NOT NULL COMMENT '大カテゴリID（categories.id）',
+  name VARCHAR(100) NOT NULL COMMENT '小カテゴリ名',
+  display_order INT DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (parent_id) REFERENCES categories(id) ON DELETE CASCADE,
+  UNIQUE KEY unique_parent_name (parent_id, name),
+  INDEX idx_parent_id (parent_id),
   INDEX idx_display_order (display_order)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -69,6 +84,16 @@ CREATE TABLE IF NOT EXISTS NewsRelease (
   INDEX idx_publish_start (publish_start),
   INDEX idx_publish_end (publish_end),
   INDEX idx_is_important (is_important)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- おすすめレコード管理テーブル
+CREATE TABLE IF NOT EXISTS featured_records (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  sound_id INT NOT NULL UNIQUE COMMENT 'おすすめレコード対象の音源ID',
+  display_order INT DEFAULT 0 COMMENT '表示順序',
+  featured_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '追加日時',
+  FOREIGN KEY (sound_id) REFERENCES sounds(id) ON DELETE CASCADE,
+  INDEX idx_display_order (display_order)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 初期管理者ユーザー作成（例）

@@ -169,24 +169,101 @@ require_once 'header.php';
                                value="<?php echo esc($sound['title']); ?>" required>
                     </div>
 
-                    <!-- カテゴリー -->
+                    <!-- 大カテゴリー選択 -->
                     <div class="mb-3">
-                        <label for="category_id" class="form-label">
-                            カテゴリー（任意）
+                        <label for="parent_category_id" class="form-label">
+                            大カテゴリー（任意）
                         </label>
-                        <select id="category_id" name="category_id" class="form-control">
-                            <option value="">-- カテゴリーなし --</option>
+                        <select id="parent_category_id" name="parent_category_id" class="form-control">
+                            <option value="">-- 大カテゴリーを選択 --</option>
                             <?php
-                            $categories = $db->select("SELECT id, name FROM categories ORDER BY display_order ASC");
-                            foreach ($categories as $cat):
+                            $parent_categories = $db->select("SELECT id, name FROM categories ORDER BY display_order ASC");
+                            foreach ($parent_categories as $pcat):
                             ?>
-                                <option value="<?php echo $cat['id']; ?>" 
-                                        <?php echo ($sound['category_id'] == $cat['id']) ? 'selected' : ''; ?>>
-                                    <?php echo esc($cat['name']); ?>
+                                <option value="<?php echo $pcat['id']; ?>">
+                                    <?php echo esc($pcat['name']); ?>
                                 </option>
                             <?php endforeach; ?>
                         </select>
                     </div>
+
+                    <!-- 小カテゴリー選択 -->
+                    <div class="mb-3">
+                        <label for="category_id" class="form-label">
+                            小カテゴリー（任意）
+                        </label>
+                        <select id="category_id" name="category_id" class="form-control">
+                            <option value="">-- 小カテゴリーなし --</option>
+                            <?php
+                            // 現在のカテゴリーの大カテゴリーを取得
+                            if ($sound['category_id']) {
+                                $current_sub = $db->selectOne(
+                                    "SELECT parent_id FROM sub_categories WHERE id = ?",
+                                    [$sound['category_id']]
+                                );
+                                if ($current_sub) {
+                                    $subs = $db->select(
+                                        "SELECT id, name FROM sub_categories WHERE parent_id = ? ORDER BY display_order ASC",
+                                        [$current_sub['parent_id']]
+                                    );
+                                    foreach ($subs as $sub):
+                                    ?>
+                                        <option value="<?php echo $sub['id']; ?>" 
+                                                <?php echo ($sound['category_id'] == $sub['id']) ? 'selected' : ''; ?>>
+                                            <?php echo esc($sub['name']); ?>
+                                        </option>
+                                    <?php
+                                    endforeach;
+                                }
+                            }
+                            ?>
+                        </select>
+                    </div>
+
+                    <!-- JavaScriptで小カテゴリーを動的ロード -->
+                    <script>
+                    (function() {
+                        const subCategoriesData = <?php
+                            $all_sub = $db->select("SELECT id, parent_id, name FROM sub_categories ORDER BY parent_id ASC, display_order ASC");
+                            echo json_encode(
+                                array_reduce($all_sub, function($acc, $item) {
+                                    $parent = $item['parent_id'];
+                                    if (!isset($acc[$parent])) $acc[$parent] = [];
+                                    $acc[$parent][] = $item;
+                                    return $acc;
+                                }, [])
+                            );
+                        ?>;
+
+                        const parentSelect = document.getElementById('parent_category_id');
+                        const categorySelect = document.getElementById('category_id');
+
+                        // 初期化：現在のカテゴリーから大カテゴリーを取得して選択
+                        <?php if ($sound['category_id']): ?>
+                            const currentSub = <?php
+                                $current_sub = $db->selectOne("SELECT parent_id FROM sub_categories WHERE id = ?", [$sound['category_id']]);
+                                echo $current_sub ? $current_sub['parent_id'] : '""';
+                            ?>;
+                            if (currentSub) {
+                                parentSelect.value = currentSub;
+                            }
+                        <?php endif; ?>
+
+                        parentSelect.addEventListener('change', function() {
+                            const parentId = this.value;
+                            categorySelect.innerHTML = '<option value="">-- 小カテゴリーなし --</option>';
+                            
+                            if (parentId && subCategoriesData[parentId]) {
+                                subCategoriesData[parentId].forEach(function(sub) {
+                                    const option = document.createElement('option');
+                                    option.value = sub.id;
+                                    option.textContent = sub.name;
+                                    categorySelect.appendChild(option);
+                                });
+                            }
+                        });
+                    })();
+                    </script>
 
                     <!-- 説明 -->
                     <div class="mb-3">

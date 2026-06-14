@@ -79,7 +79,7 @@ CREATE TABLE sounds (
   original_name VARCHAR(255) NOT NULL,
   title VARCHAR(255) NOT NULL,
   description TEXT,
-  category_id INT,
+  category_id INT COMMENT '小カテゴリID（sub_categories.id）',
   is_public TINYINT(1) DEFAULT 1,
   file_size INT NOT NULL,
   uploaded_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -88,16 +88,30 @@ CREATE TABLE sounds (
   INDEX idx_is_public (is_public),
   INDEX idx_uploaded_at (uploaded_at),
   INDEX idx_title (title),
-  INDEX idx_category_id (category_id)
+  INDEX idx_category_id (category_id),
+  FOREIGN KEY (category_id) REFERENCES sub_categories(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE categories (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(100) NOT NULL,
+  name VARCHAR(100) NOT NULL COMMENT '大カテゴリ名',
   display_order INT DEFAULT 0,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   UNIQUE KEY unique_name (name),
+  INDEX idx_display_order (display_order)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE sub_categories (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  parent_id INT NOT NULL COMMENT '大カテゴリID（categories.id）',
+  name VARCHAR(100) NOT NULL COMMENT '小カテゴリ名',
+  display_order INT DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (parent_id) REFERENCES categories(id) ON DELETE CASCADE,
+  UNIQUE KEY unique_parent_name (parent_id, name),
+  INDEX idx_parent_id (parent_id),
   INDEX idx_display_order (display_order)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -123,6 +137,15 @@ CREATE TABLE NewsRelease (
   INDEX idx_publish_start (publish_start),
   INDEX idx_publish_end (publish_end),
   INDEX idx_is_important (is_important)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE featured_records (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  sound_id INT NOT NULL UNIQUE,
+  display_order INT DEFAULT 0,
+  featured_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (sound_id) REFERENCES sounds(id) ON DELETE CASCADE,
+  INDEX idx_display_order (display_order)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
         </div>
 

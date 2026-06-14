@@ -287,3 +287,90 @@ function getSessionMessage($type = 'success') {
     }
     return $message;
 }
+
+/**
+ * 公開中の大カテゴリ一覧を取得
+ * @return array
+ */
+function getParentCategories() {
+    global $db;
+    $sql = "
+        SELECT DISTINCT c.id, c.name, c.display_order 
+        FROM categories c
+        WHERE EXISTS (
+            SELECT 1 FROM sub_categories sc
+            INNER JOIN sounds s ON sc.id = s.category_id
+            WHERE sc.parent_id = c.id AND s.is_public = 1
+        )
+        ORDER BY c.display_order ASC, c.created_at ASC
+    ";
+    return $db->select($sql);
+}
+
+/**
+ * 指定された大カテゴリの小カテゴリ一覧を取得
+ * @param int $parent_id 大カテゴリID
+ * @return array
+ */
+function getSubCategories($parent_id) {
+    global $db;
+    $sql = "
+        SELECT sc.id, sc.name, sc.display_order,
+               COUNT(s.id) as sound_count
+        FROM sub_categories sc
+        LEFT JOIN sounds s ON sc.id = s.category_id AND s.is_public = 1
+        WHERE sc.parent_id = ?
+        GROUP BY sc.id, sc.name, sc.display_order
+        ORDER BY sc.display_order ASC, sc.created_at ASC
+    ";
+    return $db->select($sql, [(int)$parent_id]);
+}
+
+/**
+ * 大カテゴリと小カテゴリをツリー構造で取得
+ * @return array
+ */
+function getCategoryTree() {
+    global $db;
+    $sql = "
+        SELECT c.id as parent_id, c.name as parent_name, c.display_order as parent_order,
+               sc.id as sub_id, sc.name as sub_name, sc.display_order as sub_order,
+               COUNT(s.id) as sound_count
+        FROM categories c
+        LEFT JOIN sub_categories sc ON c.id = sc.parent_id
+        LEFT JOIN sounds s ON sc.id = s.category_id AND s.is_public = 1
+        WHERE EXISTS (
+            SELECT 1 FROM sounds s2
+            WHERE (s2.category_id IN (SELECT id FROM sub_categories WHERE parent_id = c.id)
+                   OR (c.id IS NULL AND s2.category_id IS NULL))
+            AND s2.is_public = 1
+        )
+        GROUP BY c.id, c.name, c.display_order, sc.id, sc.name, sc.display_order
+        ORDER BY c.display_order ASC, c.created_at ASC, sc.display_order ASC, sc.created_at ASC
+    ";
+    $results = $db->select($sql);
+    
+    // ツリー構造に変換
+    $tree = [];
+    foreach ($results as $row) {
+        $parent_id = $row['parent_id'];
+        if (!isset($tree[$parent_id])) {
+            $tree[$parent_id] = [
+                'id' => $parent_id,
+                'name' => $row['parent_name'],
+                'display_order' => $row['parent_order'],
+                'subs' => []
+            ];
+        }
+        if ($row['sub_id']) {
+            $tree[$parent_id]['subs'][] = [
+                'id' => $row['sub_id'],
+                'name' => $row['sub_name'],
+                'display_order' => $row['sub_order'],
+                'sound_count' => (int)$row['sound_count']
+            ];
+        }
+    }
+    
+    return array_values($tree);
+}

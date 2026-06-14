@@ -47,6 +47,7 @@ require_once __DIR__ . '/../public/header.php';
             border-radius: 12px;
             padding: 18px;
             box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            margin: 0 28px;
         }
 
         .terms-title {

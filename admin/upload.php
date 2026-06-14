@@ -148,23 +148,68 @@ require_once 'header.php';
                                placeholder="例：波の音" required>
                     </div>
 
-                    <!-- カテゴリー -->
+                    <!-- 大カテゴリー選択 -->
                     <div class="mb-3">
-                        <label for="category_id" class="form-label">
-                            カテゴリー（任意）
+                        <label for="parent_category_id" class="form-label">
+                            大カテゴリー（任意）
                         </label>
-                        <select id="category_id" name="category_id" class="form-control">
-                            <option value="">-- カテゴリーなし --</option>
+                        <select id="parent_category_id" name="parent_category_id" class="form-control">
+                            <option value="">-- 大カテゴリーを選択 --</option>
                             <?php
-                            $categories = $db->select("SELECT id, name FROM categories ORDER BY display_order ASC");
-                            foreach ($categories as $cat):
+                            $parent_categories = $db->select("SELECT id, name FROM categories ORDER BY display_order ASC");
+                            foreach ($parent_categories as $pcat):
                             ?>
-                                <option value="<?php echo $cat['id']; ?>">
-                                    <?php echo esc($cat['name']); ?>
+                                <option value="<?php echo $pcat['id']; ?>">
+                                    <?php echo esc($pcat['name']); ?>
                                 </option>
                             <?php endforeach; ?>
                         </select>
                     </div>
+
+                    <!-- 小カテゴリー選択 -->
+                    <div class="mb-3">
+                        <label for="category_id" class="form-label">
+                            小カテゴリー（任意）
+                        </label>
+                        <select id="category_id" name="category_id" class="form-control">
+                            <option value="">-- 小カテゴリーなし --</option>
+                        </select>
+                    </div>
+
+                    <!-- JavaScriptで小カテゴリーを動的ロード -->
+                    <script>
+                    (function() {
+                        // サブカテゴリーのデータを取得
+                        const subCategoriesData = <?php
+                            $all_sub = $db->select("SELECT id, parent_id, name FROM sub_categories ORDER BY parent_id ASC, display_order ASC");
+                            echo json_encode(
+                                array_reduce($all_sub, function($acc, $item) {
+                                    $parent = $item['parent_id'];
+                                    if (!isset($acc[$parent])) $acc[$parent] = [];
+                                    $acc[$parent][] = $item;
+                                    return $acc;
+                                }, [])
+                            );
+                        ?>;
+
+                        const parentSelect = document.getElementById('parent_category_id');
+                        const categorySelect = document.getElementById('category_id');
+
+                        parentSelect.addEventListener('change', function() {
+                            const parentId = this.value;
+                            categorySelect.innerHTML = '<option value="">-- 小カテゴリーなし --</option>';
+                            
+                            if (parentId && subCategoriesData[parentId]) {
+                                subCategoriesData[parentId].forEach(function(sub) {
+                                    const option = document.createElement('option');
+                                    option.value = sub.id;
+                                    option.textContent = sub.name;
+                                    categorySelect.appendChild(option);
+                                });
+                            }
+                        });
+                    })();
+                    </script>
 
                     <!-- 説明 -->
                     <div class="mb-3">

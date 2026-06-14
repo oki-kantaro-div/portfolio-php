@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title><?php echo isset($page_title) ? esc($page_title) . ' - ' . APP_NAME : APP_NAME; ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -41,38 +42,34 @@
             font-weight: 800;
             font-display: swap;
         }
-        
-        
+
+
         body {
-            background: linear-gradient(135deg,rgb(182, 242, 255) 0%,rgb(241, 203, 255) 50%,rgb(158, 237, 255) 100%);
-            background-size: 200% 200%;
-            animation: gradientFlow 15s ease infinite;
-            font-family: 'LINESeedJP', 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-            position: relative;
-            display: flex;
-            flex-direction: column;
             overflow-x: hidden;
+            background: linear-gradient(180deg,
+                    rgb(199, 251, 255) 0%,
+                    rgb(199, 251, 255) 40%,
+                    rgb(252, 233, 255) 60%,
+                    rgb(199, 251, 255) 100%);
+            background-size: 300% 300%;
+            animation: gradientFlow 30s linear infinite;
         }
-        
+
         @keyframes gradientFlow {
             0% {
-                background-position: 0% 50%;
+                background-position: 0% 0%;
             }
-            50% {
-                background-position: 100% 50%;
-            }
+
             100% {
-                background-position: 0% 50%;
+                background-position: 300% 300%;
             }
         }
-        
+
+
         .navbar {
-            background: linear-gradient(135deg,rgb(252, 246, 255) 0%,rgb(242, 222, 255) 100%) !important;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            padding: 0.5rem 1rem !important;
+            background: rgba(255, 246, 255, 0.85) !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 0.65rem 1.3rem !important;
             position: sticky;
             top: 0;
             z-index: 1000;
@@ -84,7 +81,7 @@
         }
 
         .navbar-brand {
-            font-size: 1.2rem !important;
+            font-size: 1.56rem !important;
             font-weight: 700 !important;
             font-family: 'LINESeedJP', sans-serif;
             letter-spacing: -0.5px;
@@ -97,7 +94,7 @@
         }
 
         .navbar-logo {
-            height: 45px;
+            height: 58.5px;
             width: auto;
             object-fit: contain;
             display: inline-block;
@@ -110,7 +107,7 @@
         }
 
         .brand-name-img {
-            height: 35px;
+            height: 45.5px;
             width: auto;
             object-fit: contain;
             display: inline-block;
@@ -166,19 +163,19 @@
         }
 
         .navbar-categories-list::-webkit-scrollbar-thumb {
-            background: rgba(0,0,0,0.18);
+            background: rgba(0, 0, 0, 0.18);
             border-radius: 999px;
         }
 
         .navbar-category-link {
             display: inline-flex;
             align-items: center;
-            padding: 6px 10px;
+            padding: 5px 7px;
             border-radius: 999px;
-            background: rgba(255,255,255,0.65);
-            border: 1px solid rgba(0,0,0,0.08);
+            background: rgba(255, 255, 255, 0.65);
+            border: 1px solid rgba(1, 1, 0, 0.08);
             text-decoration: none;
-            color: #2c3e50;
+            color: #484848;
             font-size: 24px;
             font-weight: 600;
             white-space: nowrap;
@@ -186,8 +183,35 @@
         }
 
         .navbar-category-link:hover {
-            background: rgba(255,255,255,0.95);
-            color: #667eea;
+            background: rgba(255, 255, 255, 0.95);
+            color: #5d88ff;
+            transform: translateY(-1px);
+        }
+
+        /* ===== 大カテゴリリンク（シンプル版） ===== */
+        .navbar-category-item {
+            display: inline-block;
+        }
+
+        .navbar-category-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 5px 7px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.65);
+            border: 1px solid rgba(1, 1, 0, 0.08);
+            text-decoration: none;
+            color: #484848;
+            font-size: 24px;
+            font-weight: 600;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .navbar-category-button:hover {
+            background: rgba(255, 255, 255, 0.95);
+            color: #5d88ff;
             transform: translateY(-1px);
         }
 
@@ -197,7 +221,7 @@
             padding: 6px 10px;
             border: 1px solid #ddd;
             border-radius: 6px;
-            font-size: 12px;
+            font-size: 24px;
             font-family: 'Inter', sans-serif;
             transition: all 0.3s ease;
         }
@@ -216,7 +240,7 @@
             border-radius: 6px;
             font-weight: 600;
             cursor: pointer;
-            font-size: 11px;
+            font-size: 25px;
             transition: all 0.3s ease;
             white-space: nowrap;
         }
@@ -237,17 +261,17 @@
 
         /* ハンバーガーメニュー */
         .hamburger {
-            width: 54px;
-            height: 54px;
+            width: 91px;
+            height: 91px;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            gap: 7.5px;
+            gap: 9.75px;
             cursor: pointer;
             background: rgba(255, 255, 255, 0.5);
             border: none;
             border-radius: 6px;
-            padding: 9px 12px;
+            padding: 11.7px 15.6px;
             transition: all 0.3s ease;
         }
 
@@ -257,7 +281,7 @@
 
         .hamburger span {
             width: 100%;
-            height: 4.5px;
+            height: 5.85px;
             background: #333;
             border-radius: 2px;
             transition: all 0.3s ease;
@@ -282,9 +306,9 @@
             top: 60px;
             right: 0;
             background: white;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
             border-radius: 0 0 12px 12px;
-            min-width: 220px;
+            min-width: 330px;
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.3s ease;
@@ -292,18 +316,19 @@
         }
 
         .menu-dropdown.active {
-            max-height: 500px;
+            max-height: 750px;
         }
 
         .menu-dropdown a {
             display: block;
-            padding: 14px 20px;
+            padding: 21px 30px;
             text-decoration: none;
             color: #2c3e50;
             font-weight: 500;
             border-bottom: 1px solid #f0f0f0;
             transition: all 0.2s ease;
             font-family: 'LINESeedJP', sans-serif;
+            font-size: 30px;
         }
 
         .menu-dropdown a.menu-home {
@@ -311,11 +336,11 @@
             align-items: center;
             justify-content: center;
             gap: 10px;
-            padding: 14px 20px;
+            padding: 21px 30px;
         }
 
         .menu-dropdown a.menu-home img {
-            height: 34px;
+            height: 70px;
             width: auto;
             object-fit: contain;
             display: block;
@@ -327,19 +352,20 @@
 
         .menu-dropdown a:hover {
             background: linear-gradient(90deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
-            padding-left: 26px;
+            padding-left: 39px;
             color: #667eea;
         }
-        
+
         @media (min-width: 768px) {
             .navbar-search {
                 display: flex;
             }
+
             .navbar-categories {
                 display: flex;
             }
         }
-        
+
         .hero-section {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%, #5a67d8 100%);
             color: white;
@@ -374,10 +400,17 @@
         }
 
         @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(30px); }
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(30px);
+            }
         }
-        
+
         .hero-section h1 {
             font-size: 42px;
             font-weight: 700;
@@ -388,7 +421,7 @@
             position: relative;
             z-index: 1;
         }
-        
+
         .hero-section p {
             font-size: 17px;
             opacity: 0.95;
@@ -397,18 +430,18 @@
             position: relative;
             z-index: 1;
         }
-        
+
         .container {
             padding: 0 12px !important;
             max-width: 100%;
         }
 
-        .navbar > .container-fluid {
+        .navbar>.container-fluid {
             display: flex;
             align-items: center;
             gap: 20px;
         }
-        
+
         .main-container {
             padding: 30px 40px;
             max-width: 1200px;
@@ -533,7 +566,7 @@
             border-radius: 12px;
             padding: 16px;
             margin-bottom: 24px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
         }
 
         .search-form {
@@ -636,7 +669,7 @@
             padding: 12px 0 8px 0;
             color: #f1f1f3;
             letter-spacing: -0.5px;
-            border-bottom: 3px solid rgba(102, 126, 234, 0.2);
+            border-bottom: 3.5px solid rgba(102, 126, 234, 0.2);
             display: inline-block;
             text-shadow: 0 2px 4px rgba(2, 8, 34, 0.25), 0 4px 8px rgba(22, 4, 39, 0.15);
         }
@@ -661,9 +694,9 @@
             background: white;
             border-radius: 12px;
             padding: 6px;
-            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid rgba(0,0,0,0.05);
+            border: 1px solid rgba(0, 0, 0, 0.05);
             position: relative;
             overflow: hidden;
         }
@@ -683,7 +716,7 @@
 
         .sound-row:hover {
             transform: translateY(-4px);
-            box-shadow: 0 10px 24px rgba(0,0,0,0.12);
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
         }
 
         .sound-row:hover::before {
@@ -909,20 +942,20 @@
 
         .download-btn {
             width: 100%;
-            padding: 4px 8px;
-            background: linear-gradient(135deg, #c7aaff 0%, #5981f1 100%);
+            padding: 3px 8px;
+            background: linear-gradient(150deg, #d1baff 0%, #8bc9ff 100%);
             color: white;
             border: none;
-            border-radius: 8px;
-            font-weight: 600;
+            border-radius: 10px;
+            font-weight: 750;
             cursor: pointer;
             text-decoration: none;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.3s ease;
-            font-size: 11px;
-            min-height: 22px;
+            font-size: 16px;
+            min-height: 33px;
             font-family: 'Inter', sans-serif;
         }
 
@@ -936,22 +969,22 @@
         .download-btn:active {
             transform: translateY(0);
         }
-        
+
         .no-data {
             text-align: center;
             padding: 80px 20px;
             color: #7f8c8d;
             background: white;
             border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         }
-        
+
         .no-data p {
             font-size: 18px;
             margin: 0;
             font-weight: 500;
         }
-        
+
         footer {
             background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
             color: white;
@@ -959,12 +992,112 @@
             text-align: center;
             margin-top: auto;
             font-size: 14px;
-            box-shadow: 0 -2px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.1);
         }
-        
+
         footer p {
             margin: 8px 0;
             opacity: 0.9;
+        }
+
+        /* ***** スマホ対応（最大767px） ***** */
+        @media (max-width: 767px) {
+            .sounds-grid {
+                padding-left: 0;
+                padding-right: 0;
+                gap: 12px;
+                margin-left: 0;
+                margin-right: 0;
+            }
+
+            .sound-row {
+                /* スマホでも3列表示（ウルトラコンパクト版） */
+                grid-template-columns: 20% 30% 50%;
+                gap: 6px;
+                padding: 6px;
+            }
+
+            .sound-row-title {
+                align-self: flex-start;
+                min-height: auto;
+            }
+
+            .title-text {
+                font-size: 12px;
+                font-weight: 700;
+                word-break: break-word;
+                line-height: 1;
+            }
+
+            .sound-row-middle {
+                gap: 4px;
+            }
+
+            .tags-section {
+                gap: 2px;
+            }
+
+            .tag-badge {
+                font-size: 9px;
+                padding: 0px 3px;
+            }
+
+            .description-section {
+                font-size: 10px;
+                line-height: 1.1;
+                display: -webkit-box;
+                -webkit-line-clamp: 1;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+
+            .sound-row-controls {
+                gap: 4px;
+                align-items: stretch;
+            }
+
+            .custom-player {
+                min-width: auto;
+                padding: 3px 4px;
+                gap: 3px;
+            }
+
+            .play-btn {
+                width: 18px;
+                height: 18px;
+                font-size: 8px;
+                flex-shrink: 0;
+            }
+
+            .progress-container {
+                gap: 1px;
+            }
+
+            .progress-bar-wrapper {
+                height: 1.5px;
+            }
+
+            .time-display {
+                font-size: 7px;
+                white-space: nowrap;
+            }
+
+            .volume-control {
+                display: none;
+            }
+
+            .download-btn {
+                padding: 3px 5px;
+                font-size: 10px;
+                min-height: auto;
+                font-weight: 600;
+                line-height: 1;
+            }
+
+            .sound-row:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            }
         }
 
         /* ***** タブレット対応（md以上） ***** */
@@ -972,12 +1105,12 @@
             .hero-section {
                 padding: 70px 30px;
             }
-            
+
             .hero-section h1 {
                 font-size: 52px;
                 margin-bottom: 14px;
             }
-            
+
             .hero-section p {
                 font-size: 18px;
             }
@@ -1014,11 +1147,11 @@
             .volume-slider {
                 width: 40px;
             }
-            
+
             .main-container {
                 padding: 40px 30px;
             }
-            
+
             .container {
                 padding: 0 15px !important;
             }
@@ -1041,7 +1174,7 @@
                 padding: 13px 24px;
                 font-size: 16px;
             }
-            
+
             .section-title {
                 font-size: 30px;
                 margin: 28px 0 22px 0;
@@ -1137,9 +1270,9 @@
         .telop-section {
             width: 100%;
             padding: 60px 20px;
-            background: linear-gradient(135deg, rgba(255, 182, 193, 0.3) 0%, rgba(176, 224, 230, 0.3) 100%);
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.3) 100%);
             text-align: center;
-            margin: 20px 0 40px 0;
+            margin: 10px 0 10px 0;
         }
 
         .telop-container {
@@ -1148,11 +1281,11 @@
         }
 
         .telop-text {
-            font-size: 32px;
-            font-weight: 700;
-            line-height: 1.6;
-            color: #333;
-            margin: 0;
+            font-size: 54px;
+            font-weight: 600;
+            line-height: 1.5;
+            color: #ff8c8c;
+            margin: 1;
             font-family: 'LINESeedJP', sans-serif;
         }
 
@@ -1264,7 +1397,7 @@
 
         @media (max-width: 480px) {
             .telop-section {
-                padding: 40px 16px;
+                padding: 10px 10px;
             }
 
             .telop-text {
@@ -1326,7 +1459,7 @@
 
             // ===== カスタムオーディオプレイヤー機能 =====
             const players = document.querySelectorAll('.custom-player');
-            
+
             players.forEach(playerWrapper => {
                 const playBtn = playerWrapper.querySelector('.play-btn');
                 const audio = playerWrapper.querySelector('.audio-player');
@@ -1401,6 +1534,7 @@
         });
     </script>
 </head>
+
 <body>
     <!-- ナビバー -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -1411,27 +1545,37 @@
                     <img src="<?php echo SITE_URL; ?>/assets/images/brand-name.png" alt="<?php echo APP_NAME; ?>" class="brand-name-img">
                 </a>
             </div>
+            <img src="<?php echo SITE_URL; ?>/assets/images/1781217980411.png" alt="<?php echo APP_NAME; ?>" class="brand-name-img">
             <?php if (empty($hide_nav_search) || $hide_nav_search === false): ?>
-                <form method="GET" action="<?php echo SITE_URL; ?>/category.php" class="navbar-search">
-                    <input type="text" name="search" class="navbar-search-input" 
-                           placeholder="🔍 検索..." 
-                           value="<?php echo isset($navbar_search) ? esc($navbar_search) : ''; ?>">
-                    <button type="submit" class="navbar-search-btn">検索</button>
-                </form>
+
                 <?php if (!empty($navbar_categories) && is_array($navbar_categories)): ?>
                     <div class="navbar-categories" aria-label="カテゴリ一覧">
                         <div class="navbar-categories-list">
-                            <?php foreach ($navbar_categories as $cat): ?>
-                                <a class="navbar-category-link"
-                                   href="<?php echo SITE_URL; ?>/category.php?id=<?php echo esc($cat['id']); ?>">
-                                    <?php echo esc($cat['name']); ?>
-                                </a>
+                            <?php foreach ($navbar_categories as $parent_cat): ?>
+                                <div class="navbar-category-item">
+                                    <?php
+                                    // 最初の小カテゴリIDを取得（存在する場合）
+                                    $first_sub_id = !empty($parent_cat['subs']) ? $parent_cat['subs'][0]['id'] : null;
+                                    $category_link = $first_sub_id
+                                        ? SITE_URL . '/category.php?id=' . esc($first_sub_id) . '&parent=' . esc($parent_cat['id'])
+                                        : SITE_URL . '/category.php?parent=' . esc($parent_cat['id']);
+                                    ?>
+                                    <a href="<?php echo $category_link; ?>" class="navbar-category-button">
+                                        <?php echo esc($parent_cat['name']); ?>
+                                    </a>
+                                </div>
                             <?php endforeach; ?>
                             <a class="navbar-category-link"
-                               href="<?php echo SITE_URL; ?>/category.php?id=uncategorized">その他</a>
+                                href="<?php echo SITE_URL; ?>/category.php?id=uncategorized">その他</a>
                         </div>
                     </div>
                 <?php endif; ?>
+                <form method="GET" action="<?php echo SITE_URL; ?>/category.php" class="navbar-search">
+                    <input type="text" name="search" class="navbar-search-input"
+                        placeholder="🔍 効果音を検索..."
+                        value="<?php echo isset($navbar_search) ? esc($navbar_search) : ''; ?>">
+                    <button type="submit" class="navbar-search-btn">検索</button>
+                </form>
             <?php endif; ?>
             <div class="navbar-menu">
                 <button class="hamburger" id="hamburgerBtn" aria-label="メニュー">
@@ -1441,15 +1585,16 @@
                 </button>
                 <div class="menu-dropdown" id="menuDropdown">
                     <a class="menu-home" href="<?php echo SITE_URL; ?>/">
-                        <img src="<?php echo SITE_URL; ?>/assets/images/logo.png" alt="TOP">
+                        <img src="<?php echo SITE_URL; ?>/assets/images/brand-name.png" alt="TOP">
                     </a>
+                    <a href="<?php echo SITE_URL; ?>/inquiry/contact.php">効果音リクエスト／お問い合わせ</a>
+                    <a href="<?php echo SITE_URL; ?>/creator\creator.php">制作者について／SPECIAL THANKS</a>
+                    <a href="<?php echo SITE_URL; ?>/creator\creator.php">ショップ（グッズ販売）</a>
                     <a href="<?php echo SITE_URL; ?>/details/deteils.php">利用規約</a>
-                    <a href="#about-yuya">効果音リクエスト/お問い合わせ</a>
-                    <a href="<?php echo SITE_URL; ?>/creator\creator.php">製作者について</a>
                     <a href="<?php echo SITE_URL; ?>/privacy/privacy.php">プライバシーポリシー</a>
-                    <a href="/portfolio-php/admin/">管理人</a>
+                    <a href="/portfolio-php/admin/">管理用ページ</a>
                 </div>
             </div>
-            </div>
+        </div>
         </div>
     </nav>
